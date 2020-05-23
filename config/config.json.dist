@@ -11,10 +11,10 @@
     "Port": 587,
     "Username": "xxxxxxxxxxxxxxx",
     "Password": "xxxxxxxxxxxxxxx",
-    "To": "xxxxxxxxxxx",
+    "To": ["xxxxxxxxxxx"],
     "From": "xxxxxxxxxxxxx"
   },
   "LogFile": "data/logfile.log",
   "HostName": "http://domainName.com/",
-  "PrefixPathImg": "img",
+  "PrefixPathImg": "img"
 }

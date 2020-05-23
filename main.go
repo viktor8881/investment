@@ -62,7 +62,11 @@ func main() {
 
 	APP_IP := os.Getenv("APP_IP")
 	APP_PORT := os.Getenv("APP_PORT")
+	if APP_IP == "" {
+		APP_IP = "127.0.0.1"
+	}
+	if APP_PORT == "" {
+		APP_PORT = "8080"
+	}
 	http.ListenAndServe(APP_IP+":"+APP_PORT, nil)
-
-	//http.ListenAndServe(":80", nil)
 }
