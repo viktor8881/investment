@@ -1,0 +1,18 @@
+{{range .Investments}}
+    <div style="width: 100%; overflow: hidden;">
+        <div>
+            <h4 style="margin-bottom: 0; padding-left:50px;">{{.CurrencyName}}</h4>
+        </div>
+        <div style="width: 660px; float: left;">
+            <img width="655px" src="{{.PathImg}}" />
+        </div>
+        <div width="655px"  style="margin-left: 680px;">
+            <h5 style="margin-bottom: 0px">property</h5>
+            <ul>
+                <li>details 1</li>
+                <li>details 2</li>
+                <li>details 3</li>
+            </ul>
+        </div>
+    </div>
+{{end}}

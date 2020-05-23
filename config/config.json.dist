@@ -1,0 +1,20 @@
+{
+  "Sdk": {
+    "Token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "Favorits": [
+      {"FIGI": "BBG0013HGFT4", "ExchangeName": "Доллар США" },
+      {"FIGI": "BBG0013HJJ31", "ExchangeName": "Евро" }
+    ]
+  },
+  "Email": {
+    "Host": "smtp.xxxxxxxxxxx.com",
+    "Port": 587,
+    "Username": "xxxxxxxxxxxxxxx",
+    "Password": "xxxxxxxxxxxxxxx",
+    "To": "xxxxxxxxxxx",
+    "From": "xxxxxxxxxxxxx"
+  },
+  "LogFile": "data/logfile.log",
+  "HostName": "http://domainName.com/",
+  "PrefixPathImg": "img",
+}
