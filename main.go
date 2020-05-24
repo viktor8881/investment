@@ -11,6 +11,8 @@ import (
 	"os"
 )
 
+const DEFAULT_CHART = "no-data.png"
+
 func ping(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "pong")
 }
@@ -38,8 +40,12 @@ func sendEmail(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			logger.Log(err.Error())
 		}
-		fileName := chart.CreateChartByCandels(candles, config.PrefixPathImg)
-		investment := investment{CurrencyName: favorit.ExchangeName, PathImg: config.HostName + fileName}
+
+		fileName := DEFAULT_CHART
+		if len(candles) != 0 {
+			fileName = chart.CreateChartByCandels(candles, config.PathImg)
+		}
+		var investment = investment{CurrencyName: favorit.ExchangeName, PathImg: config.AbsPathChart + fileName}
 		investments = append(investments, investment)
 	}
 

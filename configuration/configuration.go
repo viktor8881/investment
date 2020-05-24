@@ -24,9 +24,9 @@ type configuration struct {
 		To       []string
 		From     string
 	}
-	LogFile       string
-	HostName      string
-	PrefixPathImg string
+	LogFile      string
+	AbsPathChart string
+	PathImg      string
 }
 
 func LoadConfiguration(fileName string) (*configuration, error) {

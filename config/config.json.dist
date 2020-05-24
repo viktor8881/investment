@@ -15,6 +15,6 @@
     "From": "xxxxxxxxxxxxx"
   },
   "LogFile": "data/logfile.log",
-  "HostName": "http://domainName.com/",
-  "PrefixPathImg": "img"
+  "AbsPathChart": "http://domainName.com/",
+  "PathImg": "img"
 }

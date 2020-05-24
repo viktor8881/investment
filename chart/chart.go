@@ -12,25 +12,20 @@ import (
 )
 
 const DIR_MODE = 755
-const DEFAULT_PATH = "no-data.png"
 
-func CreateChartByCandels(candels []sdk.Candle, prefixPathImg string) string {
-	if len(candels) == 0 {
-		return prefixPathImg + "/" + DEFAULT_PATH
-	}
-
+func CreateChartByCandels(candles []sdk.Candle, PathImg string) string {
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	currentTime := time.Now()
-	dirs := []string{prefixPathImg, strconv.Itoa(currentTime.Year()), strconv.Itoa(int(currentTime.Month()))}
-	absPathImg := dir + string(os.PathSeparator) + strings.Join(dirs, string(os.PathSeparator)) + string(os.PathSeparator)
+	dirs := []string{strconv.Itoa(currentTime.Year()), strconv.Itoa(int(currentTime.Month()))}
+	absPathImg := dir + string(os.PathSeparator) + PathImg + string(os.PathSeparator) + strings.Join(dirs, string(os.PathSeparator)) + string(os.PathSeparator)
 	if _, err := os.Stat(absPathImg); os.IsNotExist(err) {
-		os.MkdirAll(absPathImg, DIR_MODE)
+		os.MkdirAll(absPathImg, os.ModeDir)
 	}
-	fileName := candels[len(candels)-1].FIGI + "_" + candels[len(candels)-1].TS.Format("20060102") + ".png"
+	fileName := candles[len(candles)-1].FIGI + "_" + candles[len(candles)-1].TS.Format("20060102") + ".png"
 	f, _ := os.Create(absPathImg + fileName)
 	defer f.Close()
 
-	xv, yv := xyValues(candels)
+	xv, yv := xyValues(candles)
 
 	priceSeries := chart.TimeSeries{
 		Name: "SPY",
