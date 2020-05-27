@@ -78,6 +78,5 @@ func SendAnalytics(templateFileName string, data interface{}) (bool, error) {
 			return false, err
 		}
 	}
-
 	return true, nil
 }
