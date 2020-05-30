@@ -11,19 +11,19 @@ import (
 	"time"
 )
 
-const DIR_MODE = 755
-
 func CreateChartByCandels(candles []sdk.Candle, PathImg string) string {
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	currentTime := time.Now()
 	dirs := []string{strconv.Itoa(currentTime.Year()), strconv.Itoa(int(currentTime.Month()))}
 	absPathImg := dir + string(os.PathSeparator) + PathImg + string(os.PathSeparator) + strings.Join(dirs, string(os.PathSeparator)) + string(os.PathSeparator)
 	if _, err := os.Stat(absPathImg); os.IsNotExist(err) {
-		os.MkdirAll(absPathImg, os.ModeDir)
+		os.MkdirAll(absPathImg, 0755)
 	}
-	fileName := candles[len(candles)-1].FIGI + "_" + candles[len(candles)-1].TS.Format("20060102") + ".png"
+	// dd_HHii
+	fileName := candles[len(candles)-1].FIGI + "_" + candles[len(candles)-1].TS.Format("02_1504") + ".png"
 	f, _ := os.Create(absPathImg + fileName)
 	defer f.Close()
+	os.Chmod(absPathImg+fileName, 0444)
 
 	xv, yv := xyValues(candles)
 
