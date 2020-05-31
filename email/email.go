@@ -8,27 +8,27 @@ import (
 )
 
 type settings struct {
-	useAuth  bool
-	host     string
-	port     int64
-	username string
-	password string
-	to       []string
-	from     string
-	subject  string
+	host        string
+	port        int64
+	useSmtpAuth bool
+	username    string
+	password    string
+	to          []string
+	from        string
+	subject     string
 }
 
 var config settings
 
-func SetSetting(host string, port int64, username, password string, to []string, from, subject string) {
+func SetSetting(host string, port int64, useSmtpAuth bool, username, password string, to []string, from, subject string) {
 	config.host = host
 	config.port = port
+	config.useSmtpAuth = useSmtpAuth
 	config.username = username
 	config.password = password
 	config.to = to
 	config.from = from
 	config.subject = subject
-	config.useAuth = false
 }
 
 func SendAnalytics(templateFileName string, data interface{}) (bool, error) {
@@ -47,7 +47,7 @@ func SendAnalytics(templateFileName string, data interface{}) (bool, error) {
 
 	addr := config.host + ":" + strconv.Itoa(int(config.port))
 
-	if config.useAuth {
+	if config.useSmtpAuth {
 		auth := smtp.PlainAuth("", config.username, config.password, config.host)
 		if err := smtp.SendMail(addr, auth, config.from, config.to, []byte(msg)); err != nil {
 			return false, err

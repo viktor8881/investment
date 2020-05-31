@@ -17,12 +17,13 @@ type configuration struct {
 		Favorits []Favorit
 	}
 	Email struct {
-		Host     string
-		Port     int64
-		Username string
-		Password string
-		To       []string
-		From     string
+		Host        string
+		Port        int64
+		UseSmtpAuth bool
+		Username    string
+		Password    string
+		To          []string
+		From        string
 	}
 	LogFile      string
 	AbsPathChart string

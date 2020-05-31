@@ -9,6 +9,7 @@
   "Email": {
     "Host": "smtp.xxxxxxxxxxx.com",
     "Port": 587,
+    "UseSmtpAuth": false,
     "Username": "xxxxxxxxxxxxxxx",
     "Password": "xxxxxxxxxxxxxxx",
     "To": ["xxxxxxxxxxx"],

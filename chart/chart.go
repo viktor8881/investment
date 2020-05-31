@@ -4,12 +4,17 @@ import (
 	sdk "github.com/TinkoffCreditSystems/invest-openapi-go-sdk"
 	"github.com/wcharczuk/go-chart"
 	"github.com/wcharczuk/go-chart/drawing"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func CreateChartByCandels(candles []sdk.Candle, PathImg string) string {
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -20,7 +25,7 @@ func CreateChartByCandels(candles []sdk.Candle, PathImg string) string {
 		os.MkdirAll(absPathImg, 0755)
 	}
 	// dd_HHii
-	fileName := candles[len(candles)-1].FIGI + "_" + candles[len(candles)-1].TS.Format("02_1504") + ".png"
+	fileName := candles[len(candles)-1].FIGI + "_" + genPostfixFileName() + ".png"
 	f, _ := os.Create(absPathImg + fileName)
 	defer f.Close()
 	os.Chmod(absPathImg+fileName, 0444)
@@ -76,4 +81,15 @@ func xyValues(candels []sdk.Candle) ([]time.Time, []float64) {
 		yvalue = append(yvalue, candle.OpenPrice)
 	}
 	return xvalue, yvalue
+}
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func genPostfixFileName() string {
+	b := make([]rune, 10)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+
+	return string(b)
 }

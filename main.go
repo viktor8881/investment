@@ -54,7 +54,7 @@ func sendEmail(w http.ResponseWriter, req *http.Request) {
 	}{
 		Investments: investments,
 	}
-	email.SetSetting(config.Email.Host, config.Email.Port, config.Email.Username, config.Email.Password, config.Email.To, config.Email.From, "summary netangels")
+	email.SetSetting(config.Email.Host, config.Email.Port, config.Email.UseSmtpAuth, config.Email.Username, config.Email.Password, config.Email.To, config.Email.From, "summary netangels")
 	_, err = email.SendAnalytics("template/email-layout.html", Investments)
 	if err != nil {
 		logger.Log(err.Error())
