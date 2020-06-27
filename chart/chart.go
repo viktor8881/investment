@@ -19,7 +19,7 @@ func init() {
 }
 
 func CreateChartByCandels(candles []sdk.Candle, PathImg string) string {
-	if len(candles) != 0 {
+	if len(candles) == 0 {
 		return DEFAULT_CHART
 	}
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
