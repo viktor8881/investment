@@ -12,11 +12,16 @@ import (
 	"time"
 )
 
+const DEFAULT_CHART = "no-data.png"
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
 func CreateChartByCandels(candles []sdk.Candle, PathImg string) string {
+	if len(candles) != 0 {
+		return DEFAULT_CHART
+	}
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	currentTime := time.Now()
 	dirs := []string{strconv.Itoa(currentTime.Year()), strconv.Itoa(int(currentTime.Month()))}

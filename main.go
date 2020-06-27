@@ -3,23 +3,49 @@ package main
 import (
 	"fmt"
 	"github.com/sadlil/gologger"
+	"github.com/sdcoffey/techan"
 	"investment/chart"
 	"investment/configuration"
 	"investment/email"
+	"investment/indicator"
 	"investment/tinkoffMarket"
 	"net/http"
 	"os"
 )
 
-const DEFAULT_CHART = "no-data.png"
+const INDICATOR_MACD = 1
+const INDICATOR_RSI = 2
 
 func ping(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "pong")
 }
 
+type Indicator struct {
+	IName          string
+	IDescr         string
+	IValue         string
+	IRecomendation string
+}
+
 type investment struct {
 	CurrencyName string
 	PathImg      string
+	Indicators   []*Indicator
+}
+
+func newIndicator(name int8, timeSeries *techan.TimeSeries) *Indicator {
+	ind := Indicator{}
+	switch name {
+	case INDICATOR_MACD:
+		ind.IName = "MACD"
+		ind.IDescr = "MACD Histogram - рекомендации к покупке/продаже"
+		ind.IRecomendation, ind.IValue = indicator.Macd(timeSeries)
+	case INDICATOR_RSI:
+		ind.IName = "RSI"
+		ind.IDescr = "Relative Strength Index - показывает возможный разворот"
+		ind.IRecomendation, ind.IValue = indicator.Rsi(timeSeries)
+	}
+	return &ind
 }
 
 func sendEmail(w http.ResponseWriter, req *http.Request) {
@@ -41,11 +67,13 @@ func sendEmail(w http.ResponseWriter, req *http.Request) {
 			logger.Log(err.Error())
 		}
 
-		fileName := DEFAULT_CHART
-		if len(candles) != 0 {
-			fileName = chart.CreateChartByCandels(candles, config.PathImg)
-		}
+		fileName := chart.CreateChartByCandels(candles, config.PathImg)
 		var investment = investment{CurrencyName: favorit.ExchangeName, PathImg: config.AbsPathChart + fileName}
+		if len(candles) != 0 {
+			series := indicator.NewSeries(candles)
+			investment.Indicators = append(investment.Indicators, newIndicator(INDICATOR_MACD, series))
+			investment.Indicators = append(investment.Indicators, newIndicator(INDICATOR_RSI, series))
+		}
 		investments = append(investments, investment)
 	}
 
