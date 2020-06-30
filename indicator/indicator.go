@@ -1,6 +1,7 @@
 package indicator
 
 import (
+	"fmt"
 	sdk "github.com/TinkoffCreditSystems/invest-openapi-go-sdk"
 	"github.com/sdcoffey/big"
 	"github.com/sdcoffey/techan"
@@ -76,6 +77,31 @@ func Rsi(ts *techan.TimeSeries) (string, string) {
 
 	i := len(ts.Candles) - 1
 	value := indicator.Calculate(i).FormattedString(2)
+	if strategy.ShouldEnter(i, record) {
+		return BUY, value
+	} else if strategy.ShouldExit(i, record) {
+		return SELL, value
+	}
+	return NEUTRAL, value
+}
+
+func Arron(ts *techan.TimeSeries) (string, string) {
+	aroonUp := techan.NewAroonUpIndicator(techan.NewHighPriceIndicator(ts), 25)
+	aroonDown := techan.NewAroonDownIndicator(techan.NewLowPriceIndicator(ts), 25)
+
+	entryRule := techan.NewCrossUpIndicatorRule(aroonDown, aroonUp)
+	exitRule := techan.NewCrossDownIndicatorRule(aroonUp, aroonDown)
+
+	record := techan.NewTradingRecord()
+
+	strategy := techan.RuleStrategy{
+		UnstablePeriod: 10, // Period before which ShouldEnter and ShouldExit will always return false
+		EntryRule:      entryRule,
+		ExitRule:       exitRule,
+	}
+
+	i := len(ts.Candles) - 1
+	value := fmt.Sprintf("%f", aroonUp.Calculate(i).Float()-aroonDown.Calculate(i).Float())
 	if strategy.ShouldEnter(i, record) {
 		return BUY, value
 	} else if strategy.ShouldExit(i, record) {
