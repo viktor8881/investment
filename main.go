@@ -16,16 +16,17 @@ import (
 const INDICATOR_MACD = 1
 const INDICATOR_RSI = 2
 const INDICATOR_AROON = 3
+const INDICATOR_CCI = 4
 
 func ping(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "pong")
 }
 
 type Indicator struct {
-	IName          string
-	IDescr         string
-	IValue         string
-	IRecomendation string
+	IName              string
+	IDescr             string
+	IRecomendation     string
+	ILastRecomandation string
 }
 
 type investment struct {
@@ -40,15 +41,19 @@ func newIndicator(name int8, timeSeries *techan.TimeSeries) *Indicator {
 	case INDICATOR_MACD:
 		ind.IName = "MACD"
 		ind.IDescr = "MACD Histogram - рекомендации к покупке/продаже"
-		ind.IRecomendation, ind.IValue = indicator.Macd(timeSeries)
+		ind.IRecomendation, ind.ILastRecomandation = indicator.Macd(timeSeries, 9)
 	case INDICATOR_RSI:
 		ind.IName = "RSI"
 		ind.IDescr = "Relative Strength Index - показывает возможный разворот"
-		ind.IRecomendation, ind.IValue = indicator.Rsi(timeSeries)
+		ind.IRecomendation, ind.ILastRecomandation = indicator.Rsi(timeSeries, 14)
 	case INDICATOR_AROON:
 		ind.IName = "Aroon"
 		ind.IDescr = "Aroon - - рекомендации к покупке/продаже"
-		ind.IRecomendation, ind.IValue = indicator.Arron(timeSeries)
+		ind.IRecomendation, ind.ILastRecomandation = indicator.Arron(timeSeries, 25)
+	case INDICATOR_CCI:
+		ind.IName = "CCI"
+		ind.IDescr = "CCI - - рекомендации к покупке/продаже"
+		ind.IRecomendation, ind.ILastRecomandation = indicator.Cci(timeSeries, 40)
 	}
 	return &ind
 }
@@ -79,6 +84,7 @@ func sendEmail(w http.ResponseWriter, req *http.Request) {
 			investment.Indicators = append(investment.Indicators, newIndicator(INDICATOR_MACD, series))
 			investment.Indicators = append(investment.Indicators, newIndicator(INDICATOR_RSI, series))
 			investment.Indicators = append(investment.Indicators, newIndicator(INDICATOR_AROON, series))
+			investment.Indicators = append(investment.Indicators, newIndicator(INDICATOR_CCI, series))
 		}
 		investments = append(investments, investment)
 	}
