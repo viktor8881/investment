@@ -85,17 +85,32 @@ func runStrategy(entryRule, exitRule techan.Rule, window, lastIndex int) (string
 		ExitRule:       exitRule,
 	}
 
-	if strategy.ShouldEnter(lastIndex, record) {
-		return BUY, ""
-	} else if strategy.ShouldExit(lastIndex, record) {
-		return SELL, ""
-	}
-	for i := lastIndex - 1; i > window; i-- {
-		if strategy.ShouldEnter(i, record) {
-			return KEEP_BUY, "should buy " + strconv.Itoa(lastIndex-window) + " day(s) ago"
-		} else if strategy.ShouldExit(i, record) {
-			return KEEP_SELL, "should sell " + strconv.Itoa(lastIndex-window) + " day(s) ago"
+	postFixMessage := func(day int) string {
+		result := "righ now"
+		if day != 0 {
+			result = strconv.Itoa(day) + " day(s) ago"
 		}
+		return result
+	}
+
+	if strategy.ShouldEnter(lastIndex, record) {
+		j := 0
+		for i := lastIndex - 1; i > window; i-- {
+			if !strategy.ShouldEnter(i, record) {
+				j = lastIndex - (i + 1)
+				break
+			}
+		}
+		return BUY, "should buy " + postFixMessage(j)
+	} else if strategy.ShouldExit(lastIndex, record) {
+		j := 0
+		for i := lastIndex - 1; i > window; i-- {
+			if !strategy.ShouldExit(i, record) {
+				j = lastIndex - (i + 1)
+				break
+			}
+		}
+		return SELL, "should sell " + postFixMessage(j)
 	}
 	return NEUTRAL, "recommendation did`t found"
 }
